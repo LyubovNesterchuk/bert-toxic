@@ -1,8 +1,5 @@
 FROM python:3.11-slim
 
-ENV PYTHONDONTWRITEBYTECODE=1
-ENV PYTHONUNBUFFERED=1
-
 WORKDIR /app
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -12,7 +9,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 COPY requirements.txt .
 
+# CPU-only PyTorch — без CUDA/NVIDIA пакетів
 RUN pip install --no-cache-dir --upgrade pip \
+    && pip install --no-cache-dir \
+       torch==2.13.0 \
+       --index-url https://download.pytorch.org/whl/cpu \
     && pip install --no-cache-dir -r requirements.txt
 
 COPY . .
@@ -21,4 +22,4 @@ EXPOSE 8501
 
 HEALTHCHECK CMD curl --fail http://localhost:8501/_stcore/health || exit 1
 
-CMD ["streamlit", "run", "app.py", "--server.address=0.0.0.0", "--server.port=8501"]
+CMD ["python", "-m", "streamlit", "run", "app.py", "--server.address=0.0.0.0", "--server.port=8501"]
