@@ -12,7 +12,8 @@ COPY requirements.txt .
 # CPU-only PyTorch — без CUDA/NVIDIA пакетів
 RUN pip install --no-cache-dir --upgrade pip \
     && pip install --no-cache-dir \
-       torch==2.13.0 \
+       torch==2.1.2 \
+       torchvision==0.16.2 \
        --index-url https://download.pytorch.org/whl/cpu \
     && pip install --no-cache-dir -r requirements.txt
 
